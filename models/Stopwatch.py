@@ -34,3 +34,4 @@ class Stopwatch:
         seconds = self.seconds % 60
         # return "%02d:%02d:%02d" % (hours, minutes, seconds)
         return f'{hours:02}:{minutes:02}:{seconds:02}'
+

@@ -1,4 +1,5 @@
 from random import randint
+from turtledemo.nim import NimModel
 
 from models.Database import Database
 from models.Stopwatch import Stopwatch
@@ -95,3 +96,33 @@ class Model:
         if data:
          for record in data:
             print(record) #name -> record[1]
+def show_no_cheater(self):
+    """Edetabel ausatele mängijatele"""
+    db = Database()
+    data = db.no_cheater()
+    if data:
+        #Vormindus funktsioon veerule
+        formatters = {
+            'Mängu aeg': self.format_time,}
+
+        print() #Tühirida enne edetabelit
+        #self.print_table(data, formatters)
+        self.manual_table(data)
+        print() #Tühirida peale tabelit
+
+
+    @staticmethod
+    def format_time(self):
+        hours = self.seconds // 3600
+        minutes = (self.seconds % 3600) // 60
+        seconds = self.seconds % 60
+        # return "%02d:%02d:%02d" % (hours, minutes, seconds)
+        return f'{hours:02}:{minutes:02}:{seconds:02}'
+
+    @staticmethod
+    def print_table(data, formatters=None):...
+
+    def manual_table(self, data):
+        print('Nimi             Number Sammud Mängu aeg')
+        for row in data:
+            print(f'{row[0] [:15]:<16} {row[1]:>6} {row[2]:>6} {self.format_time(row[3]):>9}')
