@@ -17,8 +17,8 @@ class Stopwatch:
     def _run(self): #Aeg jookseb threadis
         """Aeg jookseb threadis"""
         while self.running:
-            time.sleep(1) #Oota üks sekund
             self.seconds += 1   # Suurenda sekundit ühe võrra
+            time.sleep(1) #Oota üks sekund
 
     def stop(self): #Peata stpper
         """Peata stopper"""
