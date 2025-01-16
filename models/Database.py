@@ -1,4 +1,5 @@
 import sqlite3
+from logging import setLogRecordFactory
 
 
 class Database:
@@ -31,7 +32,7 @@ class Database:
         try:
             if self.conn:
                 self.conn.close()
-                print('Ühendus andmebaasiga {self.db_name} suletud.')
+                print(f'Ühendus andmebaasiga {self.db_name} suletud.')
         except Exception as error:
             print(f'Tõrge ühenduse loomisel: {error}')
 
@@ -50,3 +51,19 @@ class Database:
                 self.close_connection()
         else:
             print('Ühenduse andmebaasiga puudub. Palun loo ühendus andmebaasiga.')
+
+    def add_record(self, name, steps, pc_nr, cheater, seconds):
+        """Lisab mängija andmed tabelisse"""
+        if self.cursor:
+            try:
+                sql = f'INSERT INTO {self.table} (name, steps, quess, cheater, game_length) Values (?, ?, ?, ?, ?);'
+                self.cursor.execute(sql, (name, steps, pc_nr, cheater, seconds))
+                self.conn.commit()
+                print('Mängija on lisatud tabelisse')
+            except sqlite3.Error as error:
+                print(f'Mängija lisamisel tekkis tõrge: {error}')
+            finally:
+                self.close_connection()
+        else:
+            print('Ühendus puudub! Palun loo ühendus andmebaasiga.')
+
