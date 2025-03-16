@@ -67,19 +67,3 @@ class Database:
         else:
             print('Ühendus puudub! Palun loo ühendus andmebaasiga.')
 
-    def no_cheater(self):
-        """loeb andmebaasist kogu edetabeli"""
-        if self.cursor:
-            try:
-                sql = f'SELECT name, quess, steps, game_length FROM {self.table} WHERE cheater=?;'
-                self.cursor.execute(sql, (0,))
-                data = self.cursor.fetchall()  # kõik kirjed muutujasse data
-                return data  # Tagastab kõik kirjed
-            except sqlite3.Error as error:
-                print(f'Kirjete lugemisel ilmnes tõrge: {error}')
-                return []  # Tagastab tühja listi
-            finally:
-                self.close_connection()
-
-
-
