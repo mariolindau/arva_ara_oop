@@ -1,5 +1,4 @@
 import sqlite3
-from logging import setLogRecordFactory
 
 
 class Database:
@@ -67,3 +66,18 @@ class Database:
         else:
             print('Ühendus puudub! Palun loo ühendus andmebaasiga.')
 
+    def no_cheater(self):
+        """Loeb andmebaasist ainult ausad mängijad"""
+        if self.cursor:
+            try:
+                sql = f'SELECT name, quess, steps, game_length FROM {self.table} WHERE cheater=?;'
+                self.cursor.execute(sql, (0,))
+                data = self.cursor.fetchall() # Kõik kirjes muutujasse data
+                return data # tagastab kõik kirjed
+            except sqlite3.Error as error:
+                print(f'Kirjete lugemisel ilmnes tõrge: {error}')
+                return [] # Tagastab tühja listi
+            finally:
+                self.close_connection()
+        else:
+            print('Ühendus andmebaasiga puudub. Palun loo ühendus andmebaasiga.')

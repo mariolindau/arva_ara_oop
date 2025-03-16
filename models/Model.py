@@ -52,8 +52,8 @@ class Model:
 
         # Näita mängu aega
         print(f'Mäng kestis {self.stopwatch.format_time()}')
-        self.what_next()#Mis on järgmiseks
-        self.show_menu()
+        self.what_next() # Mis on järgmiseks :) Nime küsimine ja kirje lisamine
+        self.show_menu() # Näita mängu menüüd
 
     def what_next(self):
         """Küsime mängija nime ja lisame info andmebaasi"""
@@ -80,18 +80,77 @@ class Model:
                 self.reset_game() # Algseadista mäng
                 self.lets_play()  #lähme mängima
             elif user_input == 2:
-                self.show_leaderboard()
-                self.show_menu()
+                #self.show_leaderboard() # Näita edetabelit
+                self.show_no_cheater()
+                self.show_menu() # Näita mängu menüüd
             elif user_input == 3:
-                print('Bye, bye :)')
+                print('Bye, bye :)') # Väljasta tekst
                 exit() #Igasuguse skripti töö lõppeb
         else:
             self.show_menu()
 
-    def show_leaderboard(self):
+    @staticmethod
+    def show_leaderboard():
         """Näita edetabelit"""
         db = Database()
         data = db.read_records()
         if data:
          for record in data:
             print(record) #name -> record[1]
+
+
+    def show_no_cheater(self):
+        """Edetabel ausatele mängijatele"""
+        db = Database()
+        data = db.no_cheater() # Enda loodud meetod!
+        if data:
+            # Vormindus funktsioon veerule
+            formatters = {
+                'Mängu aeg': self.format_time
+            }
+            print() # Tühirida enne edetabelit
+            self.print_table(data, formatters) # Dünaamiline ilus tabel
+            # self.manual_table(data9 # Käsitsi tehtud ilus tabel
+            print()
+
+    @staticmethod
+    def format_time(seconds):
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        seconds = seconds % 60
+       # return "%d:%02d:%02d" % (hours, minutes, seconds)
+        return f'{hours:02}:{minutes:02}:{seconds:02}'
+
+    @staticmethod
+    def print_table(data, formatters=None):
+        def format_cell(value, width, column_name=None, target_column=None):
+            # Rakenda vormindus kui veerule on määratud formatter
+            if formatters and column_name in formatters:
+                value = formatters[column_name](value)
+            value = str(value)
+
+            # Lühenda ainult sihtveeru väärtusi (Nimi maksimaalselt 15 märki)
+            if column_name == target_column and len(value) > width:
+                value = value[:width]
+
+            # Numbrid paremale, tekstid vasakule
+            return value.rjust(width) if value.isdigit() else value.ljust(width)
+
+        headers = ['Nimi', 'Number', 'Sammud', 'Mängu aeg'] #Veergude nimed
+        column_widths = [15, 7, 7, 9] # Veergude laiused
+
+        # Loob tabeli päise
+        header_row = ' | '.join(f'{header:<{width}}'
+                                for header, width in zip(headers, column_widths))
+        print(header_row) # Väljastab
+        print('-' * len(header_row)) #-------
+
+        for row in data: # Väljastab isiku kaupa info
+            print(' | '.join(
+                format_cell(item, width, column_name=header, target_column='Nimi')
+                for item, width, header in zip(row, column_widths, headers)))
+
+    def manual_table(self, data):
+        print('Nimi              Number Sammud Mängu aeg')
+        for row in data:
+            print(f'{row[0][:15]:<16} {row[1]:>6} {row[2]:>6} {self.format_time(row[3]):>9}')
