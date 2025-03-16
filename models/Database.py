@@ -70,7 +70,7 @@ class Database:
         """Loeb andmebaasist ainult ausad mängijad"""
         if self.cursor:
             try:
-                sql = f'SELECT name, quess, steps, game_length FROM {self.table} WHERE cheater=?;'
+                sql = f'SELECT name, quess, steps, game_length FROM {self.table} WHERE cheater=? ORDER BY steps ASC, game_length ASC, name ASC LIMIT 10;'
                 self.cursor.execute(sql, (0,))
                 data = self.cursor.fetchall() # Kõik kirjes muutujasse data
                 return data # tagastab kõik kirjed
