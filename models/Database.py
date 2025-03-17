@@ -81,3 +81,19 @@ class Database:
                 self.close_connection()
         else:
             print('Ühendus andmebaasiga puudub. Palun loo ühendus andmebaasiga.')
+
+    def for_export(self):
+        """Loeb kogu andmebaasi sisu ja sorteerib tulemused vastavalt no_cheater() meetodile"""
+        if self.cursor:
+            try:
+                sql = f'SELECT name, quess, steps, game_length FROM {self.table} WHERE cheater=? ORDER BY steps ASC, game_length ASC, name ASC LIMIT 10;'
+                self.cursor.execute(sql, (0,))
+                data = self.cursor.fetchall() # Kõik kirjed muutujasse data
+                return data # Tagastab kogu andmebaasi sisu
+            except sqlite3.Error as error:
+                print(f'Kirjete lugemisel ilmnes tõrge: {error}')
+                return [] # Tagastab tühja listi
+            finally:
+                self.close_connection()
+        else:
+            print('Ühendus andmebaasiga puudub. Palun loo ühendus andmebaasiga.')

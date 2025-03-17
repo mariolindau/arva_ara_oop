@@ -1,6 +1,7 @@
 from random import randint
 
 from models.Database import Database
+from models.ExportToFile import ExportToFile
 from models.Stopwatch import Stopwatch
 
 
@@ -110,8 +111,14 @@ class Model:
             }
             print() # Tühirida enne edetabelit
             self.print_table(data, formatters) # Dünaamiline ilus tabel
-            # self.manual_table(data9 # Käsitsi tehtud ilus tabel
+            # self.manual_table(data) # Käsitsi tehtud ilus tabel
             print()
+
+            # Ekspordi edetabel faili
+            exporter = ExportToFile(self)
+            exporter.export()
+        else:
+            print("Edetabel on tühi või kõik mängijad on petnud")
 
     @staticmethod
     def format_time(seconds):
